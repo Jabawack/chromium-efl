@@ -1,0 +1,137 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Chromium-efl by Jabawack</title>
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/github-dark.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script src="javascripts/respond.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <!--[if lt IE 8]>
+    <link rel="stylesheet" href="stylesheets/ie.css">
+    <![endif]-->
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+
+  </head>
+  <body>
+      <div id="header">
+        <nav>
+          <li class="fork"><a href="https://github.com/Jabawack/chromium-efl">View On GitHub</a></li>
+          <li class="downloads"><a href="https://github.com/Jabawack/chromium-efl/zipball/master">ZIP</a></li>
+          <li class="downloads"><a href="https://github.com/Jabawack/chromium-efl/tarball/master">TAR</a></li>
+          <li class="title">DOWNLOADS</li>
+        </nav>
+      </div><!-- end header -->
+
+    <div class="wrapper">
+
+      <section>
+        <div id="title">
+          <h1>Chromium-efl</h1>
+          <p></p>
+          <hr>
+          <span class="credits left">Project maintained by <a href="https://github.com/Jabawack">Jabawack</a></span>
+          <span class="credits right">Hosted on GitHub Pages &mdash; Theme by <a href="https://twitter.com/michigangraham">mattgraham</a></span>
+        </div>
+
+        <h2>
+<a id="introduction" class="anchor" href="#introduction" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Introduction</h2>
+
+<p>chromium-efl is a Chromium/Blink engine port to tizen/efl platform. The port
+implements Chromium/Blink platform APIs.</p>
+
+<p>It also exposes a webview API implementation based on chromium-efl port. It is
+supposed to be completely source and binary compatible with EFL-WebKit2.</p>
+
+<h2>
+<a id="details" class="anchor" href="#details" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Details</h2>
+
+<ol>
+<li>gclient pulls chromium-efl into "src/tizen_src".</li>
+<li>The it runs 3 custom hooks in order to get the rest of the source:</li>
+</ol>
+
+<pre><code>* fetch-src-blink: src/tizen_src/sync_repos.sh is called and
+    pulls in src and src/third_party/WebKit from a pre-defined locations.
+* generate-gclient-xwalk: .gclient-xwalk is created by running
+    src/tizen_src/scripts/xwalkgenerate_gclient-xwalk.py (this is a fork
+    of the same script in xwalk repository).
+* fetch-deps: actually fetches all depedencies in .gclient-xwalk.
+</code></pre>
+
+<h2>
+<a id="procedure" class="anchor" href="#procedure" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Procedure</h2>
+
+<ul>
+<li>create .gclient file (as below)</li>
+</ul>
+
+<pre><code>solutions = [
+  { "name"        : "src/tizen_src",
+    "url"         : "git@github.com:crosswalk-project/chromium-efl.git@efl/crosswalk-10/39.0.2171.19",
+    "managed"     : True,
+    "custom_hooks": [
+      {
+        # fetch custom src and blink repositories.
+        "name": "fetch-src-blink",
+        "pattern": ".",
+        "action": ["src/tizen_src/sync_repos.sh"],
+      },
+      {
+        # Generate .gclient-xwalk for Crosswalk's dependencies.
+        "name": "generate-gclient-xwalk",
+        "pattern": ".",
+        "action": ["python", "src/tizen_src/scripts/xwalk/generate_gclient-xwalk.py"],
+      },
+      {
+        # Fetch Crosswalk dependencies.
+        "name": "fetch-deps",
+        "pattern": ".",
+        "action": ["python", "src/xwalk/tools/fetch_deps.py", "-v"],
+      },
+      {
+        # At some point, we will integrate to gyp_xwalk. Not now...
+        "name": "gyp-xwalk",
+      }
+    ],
+    "safesync_url": "",
+  },
+]
+cache_dir = None
+</code></pre>
+
+<pre><code>$ gclient sync
+</code></pre>
+
+<h2>
+<a id="building" class="anchor" href="#building" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Building</h2>
+
+<ul>
+<li>
+<p>For Desktop build</p>
+
+<p>$ ./build/build_desktop.sh [-h|--help] [--skip-gyp] [--skip-ninja] [--ccache] [--debug]</p>
+</li>
+</ul>
+
+<h2>
+<a id="coding-style" class="anchor" href="#coding-style" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Coding style</h2>
+
+<p>Internally we use the chromium coding style: <a href="http://www.chromium.org/developers/coding-style">http://www.chromium.org/developers/coding-style</a>.
+For public headers we follow efl style.</p>
+
+<h2>
+<a id="license" class="anchor" href="#license" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>License</h2>
+
+<p>Chromium-efl's code uses the BSD license, see our <code>LICENSE</code> file.</p>
+      </section>
+
+    </div>
+    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
+    
+  </body>
+</html>
